@@ -1,37 +1,30 @@
 package com.example.demo.bootstrap;
 
-import com.example.demo.model.Task;
-import com.example.demo.repository.TaskRepository;
+import com.example.demo.model.Post;
+import com.example.demo.model.User;
+import com.example.demo.service.PostService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MainBootstrap implements ApplicationRunner {
     @Autowired
-    TaskRepository taskRepository;
+    UserService userService;
+    @Autowired
+    PostService postService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        try {
-            Task task2 = new Task("hello world2");
-            Task task3 = new Task("hello world3");
-
-            taskRepository.save(task2);
-            taskRepository.save(task3);
+        try{
+            User user = new User("admin", 18, "admin@gmail.com");
+            userService.create(user);
+            Post post = new Post("Hellow", "world", user);
+            postService.create(post);
+        }catch (Exception ex){
+            System.out.println(ex.getMessage());
         }
-        catch(DataIntegrityViolationException ex){
-            System.out.println("Data error:" + ex.getMessage());
-        }
-        catch (Exception ex){
-            System.out.println("Unexpected error!");
-            System.out.println(ex.getStackTrace());
-        }
-        finally {
-            System.out.println("MainBootstrap executed!");
-        }
-
     }
 }
